@@ -1,3 +1,7 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, DeleteView, CreateView, UpdateView
 from django.views.generic.edit import FormMixin
@@ -18,7 +22,7 @@ class PostsList(ListView):
         return context
 
 
-class PostDetail(FormMixin, DetailView):
+class PostDetail(LoginRequiredMixin, FormMixin, DetailView):
     model = Posts
     template_name = 'post.html'
     context_object_name = 'post'
@@ -47,29 +51,85 @@ class PostDetail(FormMixin, DetailView):
         return super().form_valid(form)
 
 
-class CreatePost(CreateView):
+class CreatePost(LoginRequiredMixin, CreateView):
     model = Posts
     template_name = 'creat.html'
     form_class = PostsForm
-    permission_required = ('Post.creat_post',)
+    permission_required = ('Posts.creat_post',)
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['author'] = self.request.user
+        return initial
 
 
-class PrivateList(ListView):
-    model = Responses
-    template_name = 'privateposts.html'
-    context_object_name = 'response'
-
+class UpdatePostList(LoginRequiredMixin, ListView):
+    model = Posts
+    template_name = 'updatelist.html'
+    context_object_name = 'posts'
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super(UpdatePostList, self).get_context_data(**kwargs)
+        user = self.request.user
+        context['item'] = Posts.objects.filter(author=user)
+        return context
 
 
+class PostUpdate(LoginRequiredMixin, UpdateView):
+    template_name = 'creat.html'
+    form_class = PostsForm
+    '''permission_required'''
+
+    def get_object(self, **kwargs):
+        id = self.kwargs.get('pk')
+        return Posts.objects.get(id_Post=id)
+
+
+class PrivateList(LoginRequiredMixin, ListView):
+    model = Responses
+    template_name = 'privateposts.html'
+    context_object_name = 'responses'
+
+    def get_context_data(self, **kwargs):
+        context = super(PrivateList, self).get_context_data(**kwargs)
+        user = self.request.user
+        context['post_user'] = Posts.objects.filter(author=user)
+        context['item'] = Responses.objects.filter(post__author=user)
         context['filter'] = SearchFilter(self.request.GET, queryset=self.get_queryset())
         return context
 
 
+@login_required
+def delete_responses(request, pk):
+    try:
+        responses = Responses.objects.get(id_response=pk)
+        responses.delete()
+        return HttpResponseRedirect('/private/')
+    except Responses.DoesNotExist:
+        return HttpResponseRedirect('<h2>Отклик не удален</h2>')
 
 
+@login_required
+def public_responses(request, pk):
+    try:
+        responses = Responses.objects.get(id_response=pk)
+        responses.status = True
+        responses.save()
+        return HttpResponseRedirect('/private/')
+    except Responses.DoesNotExist:
+        return HttpResponseRedirect('<h2>Отклик не удален</h2>')
 
 
+@login_required
+def sub_category(request):
+    user = request.user
+    catt_id = request.POST['post.category.id_category']
+    category = Category.objects.get(pk=int(catt_id))
 
+    if user not in category.subscribed.all():
+        category.subscribed.add(user)
+
+    else:
+        category.subscribed.remove(user)
+
+    return redirect(request.META.get('HTTP_REFERER', '/'))

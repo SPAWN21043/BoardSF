@@ -30,24 +30,31 @@ Search
                 <td>
                     Статус
                 </td>
+                <td>
+                    Автор
+                </td>
             </tr>
-        {% for response in filter.qs %}
+        {% for responses in filter.qs%}
 
             <tr>
                 <td>
-                    {{ response.post.header }}
+                    {{ responses.post.header }}
                 </td>
                 <td>
-                    {{ response.user }}
+                    {{ responses.user }}
                 </td>
                 <td>
-                    {{ response.text }}
+                    {{ responses.text }}
                 </td>
                 <td>
-                    {{ response.status }}
+                    {{ responses.status }} <br><a href="/update/{{ responses.id_response }}">Опубликовать</a> <br>
+                    <a href="/delete/{{ responses.id_response }}">Удалить</a>
                 </td>
-
+                <td>
+                    {{ responses.id_response }}
+                </td>
             </tr>
+
         {% endfor %}
         </table>
         {% if is_paginated %}

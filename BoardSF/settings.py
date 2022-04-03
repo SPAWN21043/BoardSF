@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'ckeditor',
     'ckeditor_uploader',
-    'Post',
+    'Post.apps.PostConfig',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -170,6 +170,7 @@ EMAIL_HOST_PASSWORD = password_email
 EMAIL_USE_SSL = True
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_FROM = 'fanatik86@mail.ru'
 
 
 CELERY_BROKER_URL = 'redis://localhost:6379'

@@ -9,7 +9,7 @@ urlpatterns = [
     path('create/', CreatePost.as_view()),
     path('private/', PrivateList.as_view()),
     path('delete/<int:pk>/', views.delete_responses),
-    path('update/<int:pk>/', views.delete_responses),
+    path('update/<int:pk>/', views.public_responses),
     path('post_update/', UpdatePostList.as_view(), name='update_post'),
     path('upsate_pos/<int:pk>/', PostUpdate.as_view(), name='up_post'),
     path('subscribe/', sub_category),

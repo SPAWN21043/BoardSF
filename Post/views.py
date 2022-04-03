@@ -94,7 +94,7 @@ class PrivateList(LoginRequiredMixin, ListView):
         context = super(PrivateList, self).get_context_data(**kwargs)
         user = self.request.user
         context['post_user'] = Posts.objects.filter(author=user)
-        context['item'] = Responses.objects.filter(post__author=user)
+        context['item'] = Responses.objects.filter(post__author=user, status=False)
         context['filter'] = SearchFilter(self.request.GET, queryset=self.get_queryset())
         return context
 

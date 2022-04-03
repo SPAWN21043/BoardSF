@@ -11,7 +11,7 @@ Products
     <p>{{ post.category }}</p>
     <p>{{ post.content | safe }}</p>
     <p>{{ post.author }}</p>
-    <p>{{ post.category.id_category }}</p>
+    <p></p>
     <br>
 
     <p>
@@ -24,7 +24,7 @@ Products
                         <!-- передаём через скрытое поле id категории -->
                         <input type="hidden" name="catt_id" value="{{ post.category.id_category }}">
                         <!-- если пользователя нет в категориях, то отображаем кнопку Подписаться-->
-                        {% if current_user not in post.category.subscribed.all %}
+                        {% if request.user not in post.category.subscribed.all %}
                             <input type="submit" name="subscribe_button" value="Подписаться">
                         {% else %}
                             <!-- если пользователь есть в категориях, то отображаем кнопку Отписаться-->

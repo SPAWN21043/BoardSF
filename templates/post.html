@@ -15,21 +15,25 @@ Products
     <br>
 
     <p>
-        {% if is_auth %}
-            <form action="/subscribe/" method="POST">
-                {% csrf_token %}
 
-                <!-- передаём через скрытое поле id категории -->
-                <input type="hidden" name="catt_id" value="{{ post.category.id_category }}">
-                <!-- если пользователя нет в категориях, то отображаем кнопку Подписаться-->
-                {% if current_user not in post.category.subscribed.all %}
-                    <input type="submit" name="subscribe_button" value="Подписаться">
-                {% else %}
-                    <!-- если пользователь есть в категориях, то отображаем кнопку Отписаться-->
-                    <input type="submit" name="unsubscribe_button" value="Отписаться">
-                {% endif %}
-            </form>
-        {% endif %}
+            {% if user.is_authenticated %}
+
+                    <form action="/subscribe/" method="POST">
+                        {% csrf_token %}
+
+                        <!-- передаём через скрытое поле id категории -->
+                        <input type="hidden" name="catt_id" value="{{ post.category.id_category }}">
+                        <!-- если пользователя нет в категориях, то отображаем кнопку Подписаться-->
+                        {% if current_user not in post.category.subscribed.all %}
+                            <input type="submit" name="subscribe_button" value="Подписаться">
+                        {% else %}
+                            <!-- если пользователь есть в категориях, то отображаем кнопку Отписаться-->
+                            <input type="submit" name="unsubscribe_button" value="Отписаться">
+                        {% endif %}
+                    </form>
+
+            {% endif %}
+
     </p>
 
 

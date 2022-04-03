@@ -10,7 +10,7 @@ from django.db.models import Q
 class Category(models.Model):
     id_category = models.BigAutoField(primary_key=True)
     name = models.CharField(verbose_name='Категория', max_length=50)
-    subscribed = models.ManyToManyField(User, null=True, related_name='sub_category')
+    subscribed = models.ManyToManyField(User, related_name='sub_category')
 
     def __str__(self):
         return f'{self.name}'

@@ -123,7 +123,8 @@ def public_responses(request, pk):
 @login_required
 def sub_category(request):
     user = request.user
-    catt_id = request.POST['post.category.id_category']
+    print(user)
+    catt_id = request.POST['catt_id']
     category = Category.objects.get(pk=int(catt_id))
 
     if user not in category.subscribed.all():

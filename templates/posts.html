@@ -33,7 +33,7 @@ Products
                     {{ post.category.name }}
                 </td>
                 <td>
-                    {{ post.content | safe }}
+                    {{ post.content | truncatechars:30 | safe}}
                 </td>
                 <td>
                     {{ post.author }}
